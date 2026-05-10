@@ -85,6 +85,37 @@ function renderMessages() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// ============= CHAT BOT ===================
+function botReply(userText, isBad) {
+  let reply = "";
+
+  if (isBad) {
+    reply = "Mohon gunakan bahasa yang sopan🙏";
+  } else if (userText.toLowerCase().includes("halo")) {
+    reply = "halo juga 👋";
+  } else if (userText.toLowerCase().includes("apa kabar")) {
+    reply = "Saya baik 😄";
+  } else {
+    const randomReplies = [
+      "Pesan diterima ✔️",
+      "Baik, saya mengerti 👌",
+      "Oke 👍",
+      "Siap 😄",
+    ];
+
+    reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
+  }
+
+  messages.push({
+    user: "Bot",
+    text: reply,
+    isBad: false,
+  });
+
+  saveMessages();
+  renderMessages();
+}
+
 // =============== DELETE BTN =================
 clearBtn.addEventListener("click", function () {
   if (confirm("apakah yakin ingin menghapus semua?")) {
@@ -116,6 +147,12 @@ function handleSend() {
 
   saveMessages();
   renderMessages();
+
+  if (currentUser !== "Bot") {
+    setTimeout(() => {
+      botReply(text, isBad);
+    }, 500);
+  }
 
   // STATUS BOX
   if (isBad) {
