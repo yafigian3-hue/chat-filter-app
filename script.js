@@ -19,6 +19,14 @@ function saveMessages() {
   localStorage.setItem("messages", JSON.stringify(messages));
 }
 
+// ================ TIME ===============
+function getTime() {
+  return new Date().toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 // ================= UTILS =================
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -75,9 +83,13 @@ function renderMessages() {
       : msg.text;
 
     div.innerHTML = `
-      <div class="text-xs font-bold mb-1">${msg.user}</div>
-      <div>${displayText}</div>
-    `;
+  <div class="flex items-center justify-between mb-1">
+    <span class="text-xs font-bold">${msg.user}</span>
+    <span class="text-[10px] text-gray-500">${msg.time}</span>
+  </div>
+
+  <div>${displayText}</div>
+`;
 
     chatBox.appendChild(div);
   });
@@ -85,8 +97,38 @@ function renderMessages() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// =========== BOT TYPING =================
+function showTyping() {
+  const typingDiv = document.createElement("div");
+
+  typingDiv.id = "typingIndicator";
+
+  typingDiv.className =
+    "bg-gray-100 border border-gray-300 p-3 rounded-2xl max-w-[75%] text-sm text-gray-500 italic shadow-sm";
+
+  typingDiv.innerHTML = `
+  <div class="text-xs font-bold mb-2">Bot</div>
+
+  <div class="flex gap-1 items-center">
+    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+  </div>
+`;
+
+  chatBox.appendChild(typingDiv);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 // ============= CHAT BOT ===================
 function botReply(userText, isBad) {
+  const typingIndicator = document.getElementById("typingIndicator");
+
+  if (typingIndicator) {
+    typingIndicator.remove();
+  }
+
   let reply = "";
 
   if (isBad) {
@@ -110,6 +152,7 @@ function botReply(userText, isBad) {
     user: "Bot",
     text: reply,
     isBad: false,
+    time: getTime(),
   });
 
   saveMessages();
@@ -143,15 +186,18 @@ function handleSend() {
     user: currentUser,
     text,
     isBad,
+    time: getTime(),
   });
 
   saveMessages();
   renderMessages();
 
   if (currentUser !== "Bot") {
+    showTyping();
+
     setTimeout(() => {
       botReply(text, isBad);
-    }, 500);
+    }, 1500);
   }
 
   // STATUS BOX
