@@ -57,30 +57,35 @@ async function loadBadwords() {
   }
 }
 
-loadBadwords();
-renderMessages();
+loadBadwords().then(() => {
+  renderMessages();
+});
 
 // ================= RENDER CHAT =================
 function createMessageElement(msg) {
   const div = document.createElement("div");
 
-  div.className = `p-3 rounded-2xl max-w-[75%]
-  transition-all duration-300 ease-out
-  opacity-0 translate-y-3
-  shadow-sm
-  ${
-    msg.user === "You"
-      ? "bg-blue-100 border border-blue-300 ml-auto"
-      : msg.user === "Admin"
-        ? "bg-purple-100 border border-purple-300"
-        : "bg-gray-100 border border-gray-300"
-  }`;
+  div.className = `p-3 rounded-2xl
+max-w-[85%] sm:max-w-[75%]
+break-words
+transition-all duration-300 ease-out
+opacity-0 translate-y-3
+shadow-sm
+${
+  msg.user === "You"
+    ? "bg-blue-100 border border-blue-300 ml-auto"
+    : msg.user === "Admin"
+      ? "bg-purple-100 border border-purple-300"
+      : "bg-gray-100 border border-gray-300"
+}`;
 
-  const displayText = msg.isBad
-    ? msg.text.replace(regex, (m) => {
-        return `<span class="text-red-500 font-semibold">${m}</span>`;
-      })
-    : msg.text;
+  let displayText = msg.text;
+
+  if (regex && msg.isBad) {
+    displayText = msg.text.replace(regex, (m) => {
+      return `<span class="text-red-500 font-semibold">${m}</span>`;
+    });
+  }
 
   div.innerHTML = `
     <div class="flex items-center justify-between mb-1">
@@ -109,13 +114,19 @@ function renderMessages() {
 }
 
 // =========== BOT TYPING =================
+const oldTyping = document.getElementById("typingIndicator");
+
+if (oldTyping) {
+  oldTyping.remove();
+}
+
 function showTyping() {
   const typingDiv = document.createElement("div");
 
   typingDiv.id = "typingIndicator";
 
   typingDiv.className =
-    "bg-gray-100 border border-gray-300 p-3 rounded-2xl max-w-[75%] text-sm text-gray-500 italic shadow-sm";
+    "bg-gray-100 border border-gray-300 p-3 rounded-2xl max-w-[85%] sm:max-w-[75%] text-sm text-gray-500 italic shadow-sm";
 
   typingDiv.innerHTML = `
   <div class="text-xs font-bold mb-2">Bot</div>
@@ -159,15 +170,17 @@ function botReply(userText, isBad) {
     reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
   }
 
-  messages.push({
+  const newMessage = {
     user: "Bot",
     text: reply,
     isBad: false,
     time: getTime(),
-  });
+  };
+
+  messages.push(newMessage);
 
   saveMessages();
-  renderMessages();
+  createMessageElement(newMessage);
 }
 
 // =============== DELETE BTN =================
@@ -193,15 +206,17 @@ function handleSend() {
   const sensor = text.replace(regex, "****");
 
   // simpan ke state
-  messages.push({
+  const newMessage = {
     user: currentUser,
     text,
     isBad,
     time: getTime(),
-  });
+  };
+
+  messages.push(newMessage);
 
   saveMessages();
-  renderMessages();
+  createMessageElement(newMessage);
 
   if (currentUser !== "Bot") {
     showTyping();
@@ -231,6 +246,8 @@ userSelect.addEventListener("change", function () {
 // ================= EVENT =================
 sendBtn.addEventListener("click", handleSend);
 
-ketik.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") handleSend();
+ketik.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    handleSend();
+  }
 });
