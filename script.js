@@ -4,7 +4,6 @@ const chatBox = document.getElementById("chatBox");
 const sendBtn = document.getElementById("sendBtn");
 const clearBtn = document.getElementById("clearBtn");
 const userSelect = document.getElementById("userSelect");
-const users = ["You", "Admin", "Bot"];
 let currentUser = "You";
 
 let kataTerlarang = [];
@@ -62,39 +61,51 @@ loadBadwords();
 renderMessages();
 
 // ================= RENDER CHAT =================
+function createMessageElement(msg) {
+  const div = document.createElement("div");
+
+  div.className = `p-3 rounded-2xl max-w-[75%]
+  transition-all duration-300 ease-out
+  opacity-0 translate-y-3
+  shadow-sm
+  ${
+    msg.user === "You"
+      ? "bg-blue-100 border border-blue-300 ml-auto"
+      : msg.user === "Admin"
+        ? "bg-purple-100 border border-purple-300"
+        : "bg-gray-100 border border-gray-300"
+  }`;
+
+  const displayText = msg.isBad
+    ? msg.text.replace(regex, (m) => {
+        return `<span class="text-red-500 font-semibold">${m}</span>`;
+      })
+    : msg.text;
+
+  div.innerHTML = `
+    <div class="flex items-center justify-between mb-1">
+      <span class="text-xs font-bold">${msg.user}</span>
+      <span class="text-[10px] text-gray-500">${msg.time}</span>
+    </div>
+
+    <div>${displayText}</div>
+  `;
+
+  chatBox.appendChild(div);
+
+  setTimeout(() => {
+    div.classList.remove("opacity-0", "translate-y-3");
+  }, 10);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 function renderMessages() {
   chatBox.innerHTML = "";
 
   messages.forEach((msg) => {
-    const div = document.createElement("div");
-
-    div.className = `p-2 rounded-lg max-w-[75%] ${
-      msg.user === "You"
-        ? "bg-blue-100 border border-blue-300 ml-auto"
-        : msg.user === "Admin"
-          ? "bg-purple-100 border border-purple-300"
-          : "bg-gray-100 border border-gray-300"
-    }`;
-
-    const displayText = msg.isBad
-      ? msg.text.replace(regex, (m) => {
-          return `<span class="text-red-500 font-semibold">${m}</span>`;
-        })
-      : msg.text;
-
-    div.innerHTML = `
-  <div class="flex items-center justify-between mb-1">
-    <span class="text-xs font-bold">${msg.user}</span>
-    <span class="text-[10px] text-gray-500">${msg.time}</span>
-  </div>
-
-  <div>${displayText}</div>
-`;
-
-    chatBox.appendChild(div);
+    createMessageElement(msg);
   });
-
-  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // =========== BOT TYPING =================
