@@ -151,20 +151,80 @@ function botReply(userText, isBad) {
     typingIndicator.remove();
   }
 
+  const text = userText.toLowerCase();
+
   let reply = "";
 
+  //  BAD WORD 
   if (isBad) {
-    reply = "Mohon gunakan bahasa yang sopan🙏";
-  } else if (userText.toLowerCase().includes("halo")) {
-    reply = "halo juga 👋";
-  } else if (userText.toLowerCase().includes("apa kabar")) {
-    reply = "Saya baik 😄";
-  } else {
+    reply = "Mohon gunakan bahasa yang sopan 🙏";
+  }
+
+  //  GREETING 
+  else if (
+    text.includes("halo") ||
+    text.includes("hai") ||
+    text.includes("hi")
+  ) {
+    const greetings = [
+      "Halo juga 👋",
+      "Hai 😄",
+      "Hi, ada yang bisa dibantu?",
+      "Halo! semoga harimu menyenangkan ✨",
+    ];
+
+    reply = greetings[Math.floor(Math.random() * greetings.length)];
+  }
+
+  //  APA KABAR 
+  else if (text.includes("apa kabar") || text.includes("gimana kabar")) {
+    const kabar = ["Saya baik 😄", "Baik dong 👍", "Lagi semangat hari ini 🚀"];
+
+    reply = kabar[Math.floor(Math.random() * kabar.length)];
+  }
+
+  //  TERIMA KASIH 
+  else if (text.includes("terima kasih") || text.includes("makasih")) {
+    reply = "Sama-sama 😄";
+  }
+
+  //  JAM 
+  else if (text.includes("jam berapa")) {
+    reply = `Sekarang jam ${getTime()} ⏰`;
+  }
+
+  //  NAMA BOT 
+  else if (text.includes("siapa kamu") || text.includes("nama kamu")) {
+    reply = "Saya bot sederhana buatan JavaScript 🤖";
+  }
+
+  //  COMMAND 
+  else if (text === "/help") {
+    reply = `
+Command tersedia:
+- /help
+- /clear
+- /time
+`;
+  } else if (text === "/time") {
+    reply = `Waktu sekarang ${getTime()} ⏰`;
+  } else if (text === "/clear") {
+    messages = [];
+    saveMessages();
+    renderMessages();
+
+    reply = "Semua chat berhasil dihapus 🗑️";
+  }
+
+  //  FALLBACK 
+  else {
     const randomReplies = [
-      "Pesan diterima ✔️",
-      "Baik, saya mengerti 👌",
+      "Menarik 👀",
       "Oke 👍",
-      "Siap 😄",
+      "Saya mengerti 👌",
+      "Bisa dijelaskan lebih detail?",
+      "Pesan diterima ✔️",
+      "Baik 😄",
     ];
 
     reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
@@ -183,7 +243,7 @@ function botReply(userText, isBad) {
   createMessageElement(newMessage);
 }
 
-// =============== DELETE BTN =================
+//  DELETE BTN 
 clearBtn.addEventListener("click", function () {
   if (confirm("apakah yakin ingin menghapus semua?")) {
     localStorage.removeItem("messages");
@@ -193,7 +253,7 @@ clearBtn.addEventListener("click", function () {
   }
 });
 
-// ================= SEND MESSAGE =================
+//  SEND MESSAGE 
 function handleSend() {
   if (!isLoaded || isError) return;
 
