@@ -16,7 +16,6 @@ function createMessageElement(msg) {
 
   let displayText = msg.text;
 
-
   if (regex && msg.isBad) {
     displayText = msg.text.replace(regex, (m) => {
       return `<span class="text-red-500 font-semibold">${m}</span>`;
@@ -32,12 +31,21 @@ function createMessageElement(msg) {
           ${msg.time}
         </span>
 
-        <button
-          class="deleteBtn text-red-500 text-xs"
-          data-id="${msg.id}"
-        >
-          ✕
-        </button>
+       <div class="flex items-center gap-2">
+  <button
+    class="editBtn text-blue-500 text-xs"
+    data-id="${msg.id}"
+  >
+    Edit
+  </button>
+
+  <button
+    class="deleteBtn text-red-500 text-xs"
+    data-id="${msg.id}"
+  >
+    ✕
+  </button>
+</div>
       </div>
     </div>
 
@@ -62,6 +70,30 @@ chatBox.addEventListener("click", function (e) {
     const id = e.target.dataset.id;
 
     messages = messages.filter((msg) => msg.id !== id);
+
+    saveMessages();
+
+    renderMessages();
+  }
+
+  if (e.target.classList.contains("editBtn")) {
+    const id = e.target.dataset.id;
+
+    const message = messages.find((msg) => msg.id === id);
+
+    if (!message) return;
+
+    const newText = prompt("Edit Pesan:", message.text);
+
+    if (newText === null) return;
+
+    if (newText.trim() === "") return;
+
+    message.text = newText;
+
+    const matches = regex ? newText.match(regex) || [] : [];
+
+    message.isBad = matches.length > 0;
 
     saveMessages();
 
