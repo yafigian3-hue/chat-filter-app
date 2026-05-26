@@ -70,7 +70,10 @@ function createMessageElement(msg) {
 
   chatBox.appendChild(div);
 
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTo({
+    top: chatBox.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
 function renderMessages() {
@@ -82,8 +85,12 @@ function renderMessages() {
 }
 
 chatBox.addEventListener("click", function (e) {
-  if (e.target.classList.contains("deleteBtn")) {
-    const id = e.target.dataset.id;
+  const editBtn = e.target.closest(".editBtn");
+  const deleteBtn = e.target.closest(".deleteBtn");
+
+  // DELETE
+  if (deleteBtn) {
+    const id = deleteBtn.dataset.id;
 
     messages = messages.filter((msg) => msg.id !== id);
 
@@ -92,28 +99,22 @@ chatBox.addEventListener("click", function (e) {
     renderMessages();
   }
 
-  if (e.target.classList.contains("editBtn")) {
-    const id = e.target.dataset.id;
+  // EDIT
+  if (editBtn) {
+    const id = editBtn.dataset.id;
 
     const message = messages.find((msg) => msg.id === id);
 
     if (!message) return;
 
-    const newText = prompt("Edit Pesan:", message.text);
+    editingMessageId = id;
 
-    if (newText === null) return;
+    editInput.value = message.text;
 
-    if (newText.trim() === "") return;
+    editModal.classList.remove("hidden");
+    editModal.classList.add("flex");
 
-    message.text = newText;
-
-    const matches = regex ? newText.match(regex) || [] : [];
-
-    message.isBad = matches.length > 0;
-
-    saveMessages();
-
-    renderMessages();
+    editInput.focus();
   }
 });
 
@@ -143,5 +144,8 @@ function showTyping() {
 
   chatBox.appendChild(typingDiv);
 
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTo({
+    top: chatBox.scrollHeight,
+    behavior: "smooth",
+  });
 }

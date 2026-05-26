@@ -78,6 +78,38 @@
       </div>
     </div>
 
+    <!-- EDIT MODAL -->
+    <div
+      id="editModal"
+      class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4 z-50"
+    >
+      <div class="bg-white w-full max-w-md rounded-2xl p-5 shadow-xl">
+        <h2 class="text-lg font-semibold mb-4">Edit Pesan</h2>
+
+        <input
+          id="editInput"
+          type="text"
+          class="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button
+            id="cancelEditBtn"
+            class="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 transition"
+          >
+            Batal
+          </button>
+
+          <button
+            id="saveEditBtn"
+            class="px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/utils.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/filter.js"></script>

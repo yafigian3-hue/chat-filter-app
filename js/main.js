@@ -4,8 +4,14 @@ const chatBox = document.getElementById("chatBox");
 const sendBtn = document.getElementById("sendBtn");
 const clearBtn = document.getElementById("clearBtn");
 const userSelect = document.getElementById("userSelect");
+const editModal = document.getElementById("editModal");
+const editInput = document.getElementById("editInput");
+const saveEditBtn = document.getElementById("saveEditBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
 
 let currentUser = "You";
+
+let editingMessageId = null;
 
 loadBadwords().then(() => {
   renderMessages();
@@ -84,3 +90,38 @@ function handleSend() {
 
   ketik.focus();
 }
+
+cancelEditBtn.addEventListener("click", () => {
+  editModal.classList.add("hidden");
+
+  editModal.classList.remove("flex");
+
+  editingMessageId = null;
+});
+
+saveEditBtn.addEventListener("click", () => {
+  if (editingMessageId === null) return;
+
+  const message = messages.find((msg) => msg.id === editingMessageId);
+
+  if (!message) return;
+
+  const newText = editInput.value.trim();
+
+  if (!newText) return;
+
+  message.text = newText;
+
+  const matches = regex ? newText.match(regex) || [] : [];
+
+  message.isBad = matches.length > 0;
+
+  saveMessages();
+
+  renderMessages();
+
+  editModal.classList.add("hidden");
+  editModal.classList.remove("flex");
+
+  editingMessageId = null;
+});
