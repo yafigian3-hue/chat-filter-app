@@ -23,34 +23,50 @@ function createMessageElement(msg) {
   }
 
   div.innerHTML = `
-    <div class="flex items-center justify-between mb-1">
-      <span class="text-xs font-bold">${msg.user}</span>
+  <div class="flex items-start justify-between mb-1">
+    <span class="font-bold text-gray-700">
+      ${msg.user}
+    </span>
 
-      <div class="flex items-center gap-2">
-        <span class="text-[10px] text-gray-500">
-          ${msg.time}
-        </span>
+    <div class="flex items-center gap-1">
+      <button
+        class="editBtn
+        w-6 h-6
+        flex items-center justify-center
+        rounded-full
+        text-blue-500
+        hover:bg-blue-200/60
+        transition"
+        data-id="${msg.id}"
+      >
+        ✏️
+      </button>
 
-       <div class="flex items-center gap-2">
-  <button
-    class="editBtn text-blue-500 text-xs"
-    data-id="${msg.id}"
-  >
-    Edit
-  </button>
-
-  <button
-    class="deleteBtn text-red-500 text-xs"
-    data-id="${msg.id}"
-  >
-    ✕
-  </button>
-</div>
-      </div>
+      <button
+        class="deleteBtn
+        w-6 h-6
+        flex items-center justify-center
+        rounded-full
+        text-red-500
+        hover:bg-red-200/60
+        transition"
+        data-id="${msg.id}"
+      >
+        🗑️
+      </button>
     </div>
+  </div>
 
-    <div>${displayText}</div>
-  `;
+  <div class="text-[15px] leading-relaxed text-gray-800">
+    ${displayText}
+  </div>
+
+  <div class="flex justify-end mt-1">
+    <span class="text-[11px] text-gray-400">
+      ${msg.time}
+    </span>
+  </div>
+`;
 
   chatBox.appendChild(div);
 
