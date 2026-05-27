@@ -96,6 +96,26 @@ function createMessageElement(msg) {
 function renderMessages() {
   chatBox.innerHTML = "";
 
+  if (messages.length === 0) {
+    chatBox.innerHTML = `
+      <div class="h-full flex items-center justify-center">
+        <div class="text-center text-gray-400">
+          <div class="text-5xl mb-3">💬</div>
+
+          <h2 class="font-semibold text-lg">
+            Belum ada pesan
+          </h2>
+
+          <p class="text-sm mt-1">
+            Mulai percakapan sekarang
+          </p>
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
   messages.forEach((msg) => {
     createMessageElement(msg);
   });

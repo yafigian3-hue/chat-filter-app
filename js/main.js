@@ -68,7 +68,7 @@ function handleSend() {
 
   saveMessages();
 
-  createMessageElement(newMessage);
+  renderMessages();
 
   if (currentUser !== "Bot") {
     showTyping();
@@ -99,6 +99,8 @@ cancelEditBtn.addEventListener("click", () => {
   editModal.classList.remove("flex");
 
   editingMessageId = null;
+
+  ketik.focus();
 });
 
 saveEditBtn.addEventListener("click", () => {
@@ -126,4 +128,20 @@ saveEditBtn.addEventListener("click", () => {
   editModal.classList.remove("flex");
 
   editingMessageId = null;
+});
+
+window.addEventListener("load", () => {
+  ketik.focus();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && editModal.classList.contains("hidden")) {
+    editModal.classList.add("hidden");
+
+    editModal.classList.remove("flex");
+
+    editingMessageId = null;
+
+    ketik.focus();
+  }
 });
