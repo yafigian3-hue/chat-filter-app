@@ -93,8 +93,12 @@ function createMessageElement(msg) {
   });
 }
 
-function renderMessages() {
+function renderMessages(searchText = "") {
   chatBox.innerHTML = "";
+
+  const filteredMessages = messages.filter((msg) =>
+    msg.text.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   if (messages.length === 0) {
     chatBox.innerHTML = `
@@ -116,7 +120,23 @@ function renderMessages() {
     return;
   }
 
-  messages.forEach((msg) => {
+  if (filteredMessages.length === 0) {
+    chatBox.innerHTML = `
+      <div class="h-full flex items-center justify-center">
+        <div class="text-center text-gray-400">
+          <div class="text-5xl mb-3">🔍</div>
+
+          <h2 class="font-semibold text-lg">
+            Pesan tidak ditemukan
+          </h2>
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  filteredMessages.forEach((msg) => {
     createMessageElement(msg);
   });
 
@@ -127,7 +147,6 @@ chatBox.addEventListener("click", function (e) {
   const editBtn = e.target.closest(".editBtn");
   const deleteBtn = e.target.closest(".deleteBtn");
 
-  // DELETE
   if (deleteBtn) {
     const id = deleteBtn.dataset.id;
 
@@ -138,7 +157,6 @@ chatBox.addEventListener("click", function (e) {
     renderMessages();
   }
 
-  // EDIT
   if (editBtn) {
     const id = editBtn.dataset.id;
 

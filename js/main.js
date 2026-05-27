@@ -1,5 +1,8 @@
 const ketik = document.getElementById("ketik");
 const statusBox = document.getElementById("statusBox");
+const searchBtn = document.getElementById("searchBtn");
+const searchContainer = document.getElementById("searchContainer");
+const searchInput = document.getElementById("searchInput");
 const chatBox = document.getElementById("chatBox");
 const sendBtn = document.getElementById("sendBtn");
 const clearBtn = document.getElementById("clearBtn");
@@ -8,6 +11,18 @@ const editModal = document.getElementById("editModal");
 const editInput = document.getElementById("editInput");
 const saveEditBtn = document.getElementById("saveEditBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+searchBtn.addEventListener("click", () => {
+  searchContainer.classList.toggle("hidden");
+
+  if (!searchContainer.classList.contains("hidden")) {
+    searchInput.focus();
+  }
+});
+
+searchInput.addEventListener("input", () => {
+  renderMessages(searchInput.value);
+});
 
 let currentUser = "You";
 
