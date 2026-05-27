@@ -1,41 +1,56 @@
 function createMessageElement(msg) {
   const div = document.createElement("div");
 
-  div.className = `p-3 rounded-2xl
+  const isYou = msg.user === "You";
+
+  div.className = `
   max-w-[85%] sm:max-w-[75%]
+  px-4 py-3
   break-words
-  transition-all duration-300
   shadow-sm
-  ${
-    msg.user === "You"
-      ? "bg-blue-100 border border-blue-300 ml-auto"
-      : msg.user === "Admin"
-        ? "bg-purple-100 border border-purple-300"
-        : "bg-gray-100 border border-gray-300"
-  }`;
+  transition-all duration-300
+  relative 
+ ${
+   isYou
+     ? "ml-auto bg-slate-700 text-white rounded-2xl rounded-br-md"
+     : "bg-white text-gray-800 border border-gray-200 rounded-2xl rounded-bl-md"
+ }
+  `;
 
   let displayText = msg.text;
 
   if (regex && msg.isBad) {
     displayText = msg.text.replace(regex, (m) => {
-      return `<span class="text-red-500 font-semibold">${m}</span>`;
+      return `
+       <span class="
+    text-red-400
+    font-semibold
+    animate-pulse
+  ">
+        ${m}
+      </span>
+    `;
     });
   }
 
   div.innerHTML = `
   <div class="flex items-start justify-between mb-1">
-    <span class="font-bold text-gray-700">
-      ${msg.user}
-    </span>
+   <span class="font-bold text-sm ${isYou ? "text-slate-200" : "text-gray-700"}">
+  ${msg.user}
+</span>
 
     <div class="flex items-center gap-1">
       <button
-        class="editBtn
+       class="
+        editBtn
         w-6 h-6
         flex items-center justify-center
         rounded-full
-        text-blue-500
-        hover:bg-blue-200/60
+        ${
+          isYou
+            ? "text-slate-200 hover:bg-white/20"
+            : "text-blue-500 hover:bg-blue-200/60"
+        }
         transition"
         data-id="${msg.id}"
       >
@@ -43,12 +58,12 @@ function createMessageElement(msg) {
       </button>
 
       <button
-        class="deleteBtn
+       class="
+        deleteBtn
         w-6 h-6
         flex items-center justify-center
         rounded-full
-        text-red-500
-        hover:bg-red-200/60
+        ${isYou ? "text-red-100 hover:bg-white/20" : "text-red-500 hover:bg-red-200/60"}
         transition"
         data-id="${msg.id}"
       >
@@ -57,12 +72,14 @@ function createMessageElement(msg) {
     </div>
   </div>
 
-  <div class="text-[15px] leading-relaxed text-gray-800">
+ <div class="text-[15px] leading-relaxed ${
+   isYou ? "text-white" : "text-gray-800"
+ }">
     ${displayText}
   </div>
 
   <div class="flex justify-end mt-1">
-    <span class="text-[11px] text-gray-400">
+    <span class="text-[11px] ${isYou ? "text-slate-200" : "text-gray-400"}">
       ${msg.time}
     </span>
   </div>
