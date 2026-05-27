@@ -82,6 +82,8 @@ function renderMessages() {
   messages.forEach((msg) => {
     createMessageElement(msg);
   });
+
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 chatBox.addEventListener("click", function (e) {

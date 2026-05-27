@@ -20,7 +20,9 @@ loadBadwords().then(() => {
 sendBtn.addEventListener("click", handleSend);
 
 ketik.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+
     handleSend();
   }
 });
